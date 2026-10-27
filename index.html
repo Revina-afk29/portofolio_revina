@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio Pengembang Andal | Pengembangan Web</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: UnifrakturMaguntia (Old Newspaper), Permanent Marker (Handwritten), Impact / Oswald / Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chivo+Mono:ital,wght@0,400;0,700;0,900;1,900&family=Oswald:wght@500;700;900&family=Permanent+Marker&family=Playfair+Display:ital,wght@0,700;0,900;1,900&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        spalding: {
+                            500: '#FF6B2B',
+                            600: '#E85A1C',
+                            700: '#C2410C',
+                        },
+                        newsprint: {
+                            100: '#F3EFE0',
+                            200: '#E4DEC3',
+                            800: '#1F1E1B',
+                            900: '#121211',
+                            950: '#0A0A09'
+                        }
+                    },
+                    fontFamily: {
+                        newspaper: ['"Playfair Display"', 'serif'],
+                        masthead: ['UnifrakturMaguntia', 'serif'],
+                        handwriting: ['"Permanent Marker"', 'cursive'],
+                        sports: ['Oswald', 'sans-serif'],
+                        mono: ['"Chivo Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Halftone & Newspaper Textures */
+        body {
+            background-color: #121211;
+            color: #E4DEC3;
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 8px 8px;
+        }
+
+        /* Paper tear simulation border */
+        .paper-tear {
+            clip-path: polygon(
+                0% 0%, 100% 0%, 
+                100% calc(100% - 12px), 95% 100%, 90% calc(100% - 8px), 85% 100%, 80% calc(100% - 12px), 
+                75% 100%, 70% calc(100% - 6px), 65% 100%, 60% calc(100% - 10px), 55% 100%, 
+                50% calc(100% - 8px), 45% 100%, 40% calc(100% - 12px), 35% 100%, 30% calc(100% - 6px), 
+                25% 100%, 20% calc(100% - 10px), 15% 100%, 10% calc(100% - 8px), 5% 100%, 0% calc(100% - 10px)
+            );
+        }
+
+        .paper-tape {
+            background: rgba(228, 222, 195, 0.35);
+            backdrop-filter: blur(2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            border-left: 2px dashed rgba(255,255,255,0.4);
+            border-right: 2px dashed rgba(255,255,255,0.4);
+        }
+
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(48px) scale(0.96);
+            transition: opacity 900ms ease, transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        @keyframes ticker-scroll {
+            to { transform: translateX(-50%); }
+        }
+        .ticker-track {
+            display: flex;
+            width: max-content;
+            animation: ticker-scroll 28s linear infinite;
+        }
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes profile-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-18px); }
+        }
+        .profile-float {
+            animation: profile-float 3s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        @keyframes intro-rise {
+            from {
+                opacity: 0;
+                transform: translateY(36px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        header > div:first-child,
+        header > div:nth-child(2),
+        header > div:nth-child(3),
+        header > div:nth-child(4) {
+            animation: intro-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        header > div:nth-child(2) { animation-delay: 120ms; }
+        header > div:nth-child(3) { animation-delay: 240ms; }
+        header > div:nth-child(4) { animation-delay: 360ms; }
+
+        .card-tilt {
+            transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 350ms ease;
+        }
+        .card-tilt:hover {
+            transform: translateY(-10px) rotate(0.5deg) scale(1.02);
+            box-shadow: 0 20px 36px -8px rgba(232, 90, 28, 0.42);
+        }
+        #works .card-tilt img {
+            transition: transform 500ms ease;
+        }
+        #works .card-tilt:hover img {
+            transform: scale(1.08);
+        }
+        #works .grid > .reveal-on-scroll:nth-child(2) {
+            transition-delay: 180ms;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+            .card-tilt:hover {
+                transform: none;
+            }
+            #works .card-tilt:hover img {
+                transform: none;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121211;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E85A1C;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-spalding-600 selection:text-white min-h-screen overflow-x-hidden">
+
+    <!-- Top Sticky Ticker Tape -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-spalding-600 text-newsprint-950 font-sports font-black text-xs uppercase tracking-widest py-1.5 overflow-hidden border-b-2 border-black">
+        <div class="ticker-track whitespace-nowrap">
+            <div class="flex shrink-0 items-center gap-8 pr-8">
+                <span>★ PORTOFOLIO REVINA JULIA RAHMA EFFENDI ★</span>
+                <span>PHP NATIF / CSS / JAVASCRIPT / MYSQL / HTML / GIT & GITHUB ★</span>
+                <span>PENGEMBANGAN APLIKASI WEB ★</span>
+                <span>KEAHLIAN: PHP NATIF, CSS, JAVASCRIPT, MYSQL, HTML ★</span>
+            </div>
+            <div class="flex shrink-0 items-center gap-8 pr-8" aria-hidden="true">
+                <span>★ PORTOFOLIO REVINA JULIA RAHMA EFFENDI ★</span>
+                <span>PHP NATIF / CSS / JAVASCRIPT / MYSQL / HTML / GIT & GITHUB ★</span>
+                <span>PENGEMBANGAN APLIKASI WEB ★</span>
+                <span>KEAHLIAN: PHP NATIF, CSS, JAVASCRIPT, MYSQL, HTML ★</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN COLLAGE CONTAINER -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-16">
+
+        <!-- ================= HERO NEWSPAPER COLLAGE HEADER ================= -->
+        <header class="relative mt-4 mb-10 bg-newsprint-100 text-newsprint-900 p-4 sm:p-8 rounded-none shadow-2xl border-4 border-black paper-tear overflow-hidden">
+            
+            <!-- Newspaper Date Header -->
+            <div class="flex justify-between items-center border-b-4 border-black pb-2 text-xs font-mono font-bold uppercase tracking-wider">
+                <div>PORTOFOLIO DIGITAL</div>
+                <div class="text-center font-sports text-sm sm:text-base font-black tracking-widest text-spalding-600">PORTOFOLIO PENGEMBANG WEB</div>
+                <div>OKTOBER 2026</div>
+            </div>
+
+            <!-- Big Masthead Title -->
+            <div class="text-center my-4 border-b-2 border-black pb-4">
+                <h1 class="font-masthead text-3xl sm:text-5xl md:text-6xl tracking-tight leading-none text-black select-none">
+                    <span class="block">REVINA JULIA</span>
+                    <span class="block">RAHMA EFFENDI</span>
+                </h1>
+                <p class="font-sports font-extrabold text-xl sm:text-3xl text-spalding-600 tracking-widest uppercase mt-1">
+                    PENGEMBANG WEB
+                </p>
+            </div>
+
+            <!-- Main Collage Grid Inside Hero -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center relative z-10">
+                
+                <!-- Left Column: Big Headline & Info -->
+                <div class="md:col-span-7 space-y-4">
+                    <div class="inline-block bg-black text-newsprint-100 font-sports font-black text-xs px-3 py-1 uppercase tracking-widest">
+                        TENTANG PORTOFOLIO SAYA
+                    </div>
+                    
+                    <h2 class="font-sports font-black text-3xl sm:text-5xl uppercase leading-none text-black">
+                        MEMBANGUN APLIKASI WEB YANG FUNGSIONAL DAN MUDAH DIGUNAKAN
+                    </h2>
+
+                    <p class="font-newspaper text-sm sm:text-base leading-relaxed text-black/90 font-bold border-l-4 border-spalding-600 pl-3 italic">
+                        "Saya merancang dan mengembangkan aplikasi web untuk membantu kebutuhan bisnis dan pengelolaan layanan."
+                    </p>
+
+                    <!-- Stats Board -->
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-black/30 font-sports text-center">
+                        <div class="bg-black/5 p-2 border border-black">
+                            <span class="block font-black text-2xl text-spalding-600 leading-none">2</span>
+                            <span class="text-[10px] uppercase font-bold text-black">Proyek</span>
+                        </div>
+                        <div class="bg-black/5 p-2 border border-black">
+                            <span class="block font-black text-2xl text-spalding-600 leading-none">PHP</span>
+                            <span class="text-[10px] uppercase font-bold text-black">Teknologi Utama</span>
+                        </div>
+                        <div class="bg-black/5 p-2 border border-black">
+                            <span class="block font-black text-2xl text-spalding-600 leading-none">WEB</span>
+                            <span class="text-[10px] uppercase font-bold text-black">Fokus Pengembangan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Foto profil -->
+                <div class="md:col-span-5 relative profile-float">
+                    <div class="relative border-4 border-black bg-black p-2 shadow-2xl rotate-1">
+                        <div class="paper-tape absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 z-30 rotate-2"></div>
+                        
+                        <img src="./ft.jpeg" 
+                             alt="Foto developer" 
+                             class="w-full h-72 sm:h-80 object-cover filter grayscale contrast-125 hover:grayscale-0 transition duration-500">
+                        
+                        <div class="bg-spalding-600 text-white font-sports font-black text-center py-1 text-sm tracking-widest uppercase mt-2">
+                            REVINA JULIA RAHMA EFFENDI — PENGEMBANG WEB
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sticky Handwritten Quote Sticker (Bottom Collage) -->
+            <div class="mt-8 bg-newsprint-800 text-newsprint-100 p-4 border-2 border-black rotate-[-1deg] shadow-xl relative">
+                <div class="paper-tape absolute -top-3 right-8 w-20 h-5 z-20"></div>
+                <p class="font-handwriting text-xl sm:text-2xl text-spalding-500 text-center tracking-wide">
+                    "IDE YANG BAIK LAYAK DIWUJUDKAN MENJADI SOLUSI DIGITAL"
+                </p>
+            </div>
+
+        </header>
+
+        <!-- ================= PROFIL ================= -->
+        <section id="about" class="my-12 relative">
+            
+            <div class="bg-newsprint-800 border-4 border-spalding-600 p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                
+                <div class="absolute right-4 bottom-0 opacity-10 pointer-events-none">
+                    <i class="fas fa-code text-[220px] text-white"></i>
+                </div>
+
+                <div class="flex items-center space-x-4 border-b-2 border-spalding-600 pb-3 mb-6">
+                    <span class="bg-spalding-600 text-black font-sports font-black text-xl px-3 py-0.5">01</span>
+                    <h2 class="font-sports font-black text-3xl sm:text-4xl text-newsprint-100 uppercase tracking-widest">
+                        TENTANG SAYA
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                    
+                    <!-- Bio Text -->
+                    <div class="md:col-span-7 space-y-4 font-mono text-xs sm:text-sm text-newsprint-200/90 leading-relaxed">
+                        <p class="text-newsprint-100 font-bold">
+                            <strong class="text-spalding-500 font-sports text-lg">NAMA:</strong> REVINA JULIA RAHMA EFFENDI
+                        </p>
+                        <p>
+                            Saya adalah developer yang tertarik pada pengembangan aplikasi web. Keahlian saya meliputi PHP Native, CSS, JavaScript, MySQL, HTML, serta Git dan GitHub.
+                        </p>
+                        <p>
+                            Saya berfokus pada pembuatan solusi digital yang mudah digunakan, mulai dari aplikasi manajemen laundry hingga website untuk Access Media.
+                        </p>
+
+                        <div class="pt-4 border-t border-newsprint-200/20 font-sports uppercase">
+                            <h3 class="text-xs font-bold text-spalding-500 mb-2">AREA PENGEMBANGAN</h3>
+                            <ul class="space-y-1 text-xs">
+                                <li>Pengembangan aplikasi web</li>
+                                <li>Antarmuka dan pengalaman pengguna</li>
+                                <li>Pengelolaan data aplikasi</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-5 relative">
+                        <div class="border-4 border-newsprint-100 bg-newsprint-100 p-2 shadow-2xl rotate-2">
+                            <img src="./ft.jpeg" 
+                                 alt="Foto profil" 
+                                 class="w-full h-64 object-cover object-center filter contrast-125">
+                            <div class="bg-black text-newsprint-100 font-mono text-[11px] p-2 mt-2">
+                                <div>PERAN: PENGEMBANG WEB</div>
+                                <div>PROYEK: LAUNDRY & ACCESS MEDIA</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= PENDIDIKAN & ORGANISASI ================= -->
+        <section id="education" class="my-12">
+            <div class="bg-newsprint-800 text-newsprint-100 border-4 border-spalding-600 p-6 sm:p-8 shadow-2xl">
+                <div class="flex items-center space-x-4 border-b-2 border-spalding-600 pb-3 mb-6">
+                    <span class="bg-spalding-600 text-black font-sports font-black text-xl px-3 py-0.5">02</span>
+                    <h2 class="font-sports font-black text-2xl sm:text-3xl uppercase tracking-widest">
+                        PENDIDIKAN & PENGALAMAN ORGANISASI
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border-2 border-newsprint-200/30 p-4">
+                        <h3 class="font-sports font-bold text-lg uppercase text-spalding-500 mb-3">Riwayat Pendidikan</h3>
+                        <ol class="space-y-3 font-mono text-sm">
+                            <li><span class="text-spalding-500 font-bold">01.</span> SD Impres Kalapadua</li>
+                            <li><span class="text-spalding-500 font-bold">02.</span> SMP Plus Ma'arif NU Ciamis</li>
+                            <li><span class="text-spalding-500 font-bold">03.</span> SMK Negeri Manonjaya</li>
+                        </ol>
+                    </div>
+                    <div class="border-2 border-newsprint-200/30 p-4">
+                        <h3 class="font-sports font-bold text-lg uppercase text-spalding-500 mb-3">Pengalaman Organisasi</h3>
+                        <p class="font-mono text-sm leading-relaxed">
+                            Anggota MPK (Majelis Perwakilan Kelas).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TECH STACK LOCKER ================= -->
+        <section class="my-12">
+            <div class="bg-newsprint-100 text-black border-4 border-black p-6 sm:p-8 shadow-2xl">
+                <div class="flex items-center space-x-3 mb-6 border-b-4 border-black pb-2">
+                    <i class="fas fa-code text-spalding-600 text-2xl"></i>
+                    <h2 class="font-sports font-black text-2xl sm:text-3xl uppercase tracking-wider">
+                        TEKNOLOGI YANG DIGUNAKAN
+                    </h2>
+                </div>
+
+                <!-- Daftar teknologi -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 font-sports text-center">
+                    <div class="bg-black text-white p-3 border-2 border-black rotate-[-1deg] hover:rotate-0 transition">
+                        <i class="fab fa-php text-2xl text-spalding-500 mb-1 block"></i>
+                        <span class="font-bold text-sm tracking-wider">PHP NATIF</span>
+                    </div>
+                    <div class="bg-black text-white p-3 border-2 border-black rotate-[2deg] hover:rotate-0 transition">
+                        <i class="fab fa-css3-alt text-2xl text-blue-400 mb-1 block"></i>
+                        <span class="font-bold text-sm tracking-wider">CSS</span>
+                    </div>
+                    <div class="bg-black text-white p-3 border-2 border-black rotate-[-2deg] hover:rotate-0 transition">
+                        <i class="fas fa-database text-2xl text-blue-400 mb-1 block"></i>
+                        <span class="font-bold text-sm tracking-wider">MYSQL</span>
+                    </div>
+                    <div class="bg-black text-white p-3 border-2 border-black rotate-[1deg] hover:rotate-0 transition">
+                        <i class="fab fa-js text-2xl text-yellow-400 mb-1 block"></i>
+                        <span class="font-bold text-sm tracking-wider">JAVASCRIPT</span>
+                    </div>
+                    <div class="bg-black text-white p-3 border-2 border-black rotate-[1deg] hover:rotate-0 transition">
+                        <i class="fab fa-html5 text-2xl text-orange-500 mb-1 block"></i>
+                        <span class="font-bold text-sm tracking-wider">HTML</span>
+                    </div>
+                    <div class="bg-black text-white p-3 border-2 border-black rotate-[2deg] hover:rotate-0 transition">
+                        <i class="fab fa-git-alt text-2xl text-orange-600 mb-1 block"></i>
+                        <span class="font-bold text-sm tracking-wider">GIT & GITHUB</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PROYEK ================= -->
+        <section id="works" class="my-12">
+            
+            <div class="flex justify-between items-end border-b-4 border-spalding-600 pb-2 mb-8">
+                <div>
+                    <span class="bg-spalding-600 text-black font-sports font-black text-sm px-2 py-0.5">03</span>
+                    <h2 class="font-sports font-black text-3xl sm:text-5xl text-newsprint-100 uppercase tracking-widest mt-1">
+                        PROYEK SAYA
+                    </h2>
+                </div>
+                <div class="hidden sm:block font-mono text-xs text-spalding-500">
+                    APLIKASI WEB
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                <!-- Proyek aplikasi laundry -->
+                <div class="bg-newsprint-100 text-black p-3 border-4 border-black card-tilt relative">
+                    <div class="bg-spalding-600 text-white font-sports font-bold text-xs px-2 py-0.5 mb-2 inline-block uppercase">
+                        PROYEK #01 — PHP + MYSQL
+                    </div>
+                    <div class="h-40 border-2 border-black overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1545173168-9f1947eebb7f?auto=format&fit=crop&w=600&q=80" 
+                             alt="Sistem laundry" 
+                             class="w-full h-full object-cover filter contrast-110">
+                    </div>
+                    <div class="mt-3 space-y-1">
+                        <h3 class="font-sports font-bold text-lg leading-tight uppercase">APLIKASI MANAJEMEN LAUNDRY</h3>
+                        <p class="font-mono text-[11px] text-black/80 leading-snug">Aplikasi web untuk membantu pencatatan layanan dan pengelolaan operasional laundry.</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-black/30 flex justify-between items-center font-mono text-[10px] font-bold">
+                        <span>APLIKASI LAUNDRY</span>
+                    </div>
+                </div>
+
+                <!-- Proyek website Access Media -->
+                <div class="bg-newsprint-100 text-black p-3 border-4 border-black card-tilt relative">
+                    <div class="bg-spalding-600 text-white font-sports font-bold text-xs px-2 py-0.5 mb-2 inline-block uppercase">
+                        PROYEK #02 — HTML + CSS + JAVASCRIPT
+                    </div>
+                    <div class="h-40 border-2 border-black overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" 
+                             alt="Profil perusahaan" 
+                             class="w-full h-full object-cover filter contrast-110">
+                    </div>
+                    <div class="mt-3 space-y-1">
+                        <h3 class="font-sports font-bold text-lg leading-tight uppercase">PROFIL PERUSAHAAN ACCESS MEDIA</h3>
+                        <p class="font-mono text-[11px] text-black/80 leading-snug">Website Access Media dengan informasi perusahaan yang disajikan secara jelas dan mudah diakses.</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-black/30 flex justify-between items-center font-mono text-[10px] font-bold">
+                        <span>WEBSITE ACCESS MEDIA</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= KONTAK ================= -->
+        <section id="contact" class="my-12">
+            
+            <div class="bg-newsprint-100 text-black border-4 border-black p-6 sm:p-10 relative overflow-hidden paper-tear">
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
+                    
+                    <div>
+                        <div class="inline-block bg-spalding-600 text-white font-sports font-bold text-xs px-2 py-0.5 uppercase mb-2">
+                            HUBUNGI SAYA
+                        </div>
+                        <h2 class="font-sports font-black text-3xl sm:text-5xl uppercase tracking-widest text-black">
+                            SIAP BEKERJA SAMA?
+                        </h2>
+                        <p class="font-newspaper italic text-sm text-black/80 mt-1 font-bold">
+                            Saya terbuka untuk berdiskusi mengenai peluang kerja sama dan pengembangan aplikasi web.
+                        </p>
+                    </div>
+
+                    <!-- Contact Details Box -->
+                    <div class="bg-black text-newsprint-100 p-4 border-2 border-black font-mono text-xs sm:text-sm space-y-3 w-full md:w-auto">
+                        <div class="flex items-center gap-3 cursor-pointer hover:text-spalding-500 transition" onclick="copyText('@Developer_Telegram')">
+                            <i class="fab fa-telegram-plane text-spalding-500 text-lg w-5"></i>
+                            <span>@Developer_Telegram</span>
+                        </div>
+                        <div class="flex items-center gap-3 cursor-pointer hover:text-spalding-500 transition" onclick="copyText('+6281234567890')">
+                            <i class="fas fa-phone-alt text-spalding-500 text-lg w-5"></i>
+                            <span>+62 812-3456-7890</span>
+                        </div>
+                        <div class="flex items-center gap-3 cursor-pointer hover:text-spalding-500 transition" onclick="copyText('developer.allstar@gmail.com')">
+                            <i class="fas fa-envelope text-spalding-500 text-lg w-5"></i>
+                            <span>developer.allstar@gmail.com</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-8 pt-4 border-t-2 border-black text-center font-sports text-xs uppercase tracking-widest text-black/70">
+                    © 2026 REVINA JULIA RAHMA EFFENDI. HAK CIPTA DILINDUNGI.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Copy Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-spalding-600 text-black font-sports font-bold px-4 py-3 border-2 border-black shadow-2xl translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50">
+        <span id="toast-msg">TERSALIN KE PAPAN KLIP!</span>
+    </div>
+
+    <script>
+        function copyText(text) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.innerText = 'TERSALIN: ' + text;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
+
+            document.querySelectorAll('main > header, main > section, #works .grid > div').forEach((element) => {
+                element.classList.add('reveal-on-scroll');
+                revealObserver.observe(element);
+            });
+        }
+    </script>
+</body>
+</html>
